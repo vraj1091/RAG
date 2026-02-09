@@ -151,9 +151,16 @@ logger.info(f"CORS allowed origins: {settings.cors_origins}")
 # ============================================================================
 # Mount Static Files
 # ============================================================================
+# Mount uploads directory
 if os.path.exists(settings.upload_path):
     app.mount("/uploads", StaticFiles(directory=settings.upload_path), name="uploads")
     logger.info(f"✅ Static files mounted from {settings.upload_path}")
+
+# Mount frontend static files (for production deployment)
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    logger.info(f"✅ Frontend static files mounted from {static_dir}")
 
 # ============================================================================
 # 🔥 FIXED: Include API Routers with Correct Prefixes
@@ -166,50 +173,61 @@ app.include_router(tally_xml_routes.router, prefix="/api/v1/tally-xml", tags=["�
 
 
 # ============================================================================
-# Root Endpoint
+# Root Endpoint - Serve Frontend or API Info
 # ============================================================================
+from fastapi.responses import FileResponse
+
 @app.get("/", tags=["Root"])
 async def root():
-    """API information endpoint"""
-    return {
-        "message": "🤖 AI RAG Chatbot with Tally Integration API",
-        "version": "2.1.0",
-        "status": "operational",
-        "features": [
-            "🔐 User Authentication (Register/Login)",
-            "📄 Multi-format Document Upload (PDF, DOCX, TXT, Images, Excel, CSV)",
-            "🔍 OCR for Image Text Extraction",
-            "🧠 Real RAG Pipeline with ChromaDB Vector Database",
-            "🤖 DeepSeek R1 Local AI (Complete Privacy)",
-            "📊 Tally File Processing (XML, Excel, CSV)",
-            "🔌 Optional Tally ODBC Integration",
-            "🌐 API2Books Third-party Integration",
-            "💬 Chat with Conversation History",
-            "📈 Advanced Chart Generation",
-            "🎯 Context-aware Responses with Source Attribution",
-            "💰 Financial Analytics & Insights"
-        ],
-        "integrations": {
-            "tally_files": "enabled" if TALLY_AVAILABLE and _tally_service_instance else "disabled",
-            "tally_odbc": "available_via_api",
-            "api2books": "available_via_api",
-            "deepseek": "enabled",
-            "chromadb": "enabled",
-            "google_drive": settings.enable_google_drive if hasattr(settings, 'enable_google_drive') else False
-        },
-        "documentation": {
-            "interactive_docs": "/docs",
-            "alternative_docs": "/redoc",
-            "admin_panel": "/admin"
-        },
-        "tally_xml_endpoints": {
-            "test_connection": "/api/v1/tally-xml/test-connection",
-            "ledgers": "/api/v1/tally-xml/ledgers",
-            "vouchers": "/api/v1/tally-xml/vouchers",
-            "stock_items": "/api/v1/tally-xml/stock-items",
-            "financial_summary": "/api/v1/tally-xml/financial-summary"
+    """Serve frontend index.html or API information"""
+    # Check if frontend build exists
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+    index_path = os.path.join(static_dir, "index.html")
+    
+    if os.path.exists(index_path):
+        # Serve frontend
+        return FileResponse(index_path)
+    else:
+        # Return API information
+        return {
+            "message": "🤖 AI RAG Chatbot with Tally Integration API",
+            "version": "2.1.0",
+            "status": "operational",
+            "features": [
+                "🔐 User Authentication (Register/Login)",
+                "📄 Multi-format Document Upload (PDF, DOCX, TXT, Images, Excel, CSV)",
+                "🔍 OCR for Image Text Extraction",
+                "🧠 Real RAG Pipeline with ChromaDB Vector Database",
+                "🤖 DeepSeek R1 Local AI (Complete Privacy)",
+                "📊 Tally File Processing (XML, Excel, CSV)",
+                "🔌 Optional Tally ODBC Integration",
+                "🌐 API2Books Third-party Integration",
+                "💬 Chat with Conversation History",
+                "📈 Advanced Chart Generation",
+                "🎯 Context-aware Responses with Source Attribution",
+                "💰 Financial Analytics & Insights"
+            ],
+            "integrations": {
+                "tally_files": "enabled" if TALLY_AVAILABLE and _tally_service_instance else "disabled",
+                "tally_odbc": "available_via_api",
+                "api2books": "available_via_api",
+                "deepseek": "enabled",
+                "chromadb": "enabled",
+                "google_drive": settings.enable_google_drive if hasattr(settings, 'enable_google_drive') else False
+            },
+            "documentation": {
+                "interactive_docs": "/docs",
+                "alternative_docs": "/redoc",
+                "admin_panel": "/admin"
+            },
+            "tally_xml_endpoints": {
+                "test_connection": "/api/v1/tally-xml/test-connection",
+                "ledgers": "/api/v1/tally-xml/ledgers",
+                "vouchers": "/api/v1/tally-xml/vouchers",
+                "stock_items": "/api/v1/tally-xml/stock-items",
+                "financial_summary": "/api/v1/tally-xml/financial-summary"
+            }
         }
-    }
 
 # ============================================================================
 # FIXED Health Check (NO ODBC WARNINGS)
