@@ -18,11 +18,11 @@ class Settings(BaseSettings):
     # ================================================================
     # DATABASE SETTINGS
     # ================================================================
-    dbhost: str = Field("34.170.243.16", env="DB_HOST")
+    dbhost: str = Field("localhost", env="DB_HOST")
     dbport: int = Field(3306, env="DB_PORT")
     dbname: str = Field("rag_chatbot", env="DB_NAME")
     dbuser: str = Field("root", env="DB_USER")
-    dbpassword: str = Field("vraj10%40PA", env="DB_PASSWORD")
+    dbpassword: str = Field("password", env="DB_PASSWORD")
 
     @property
     def database_url(self):
