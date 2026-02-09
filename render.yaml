@@ -4,7 +4,6 @@ services:
     name: rag-chatbot
     env: docker
     region: oregon
-    plan: free
     branch: main
     dockerfilePath: ./Dockerfile
     dockerContext: .
@@ -58,7 +57,7 @@ services:
       
       # Frontend URL (same as backend since we serve both)
       - key: FRONTEND_URL
-        sync: false
+        value: http://localhost:8000
       
       # Python Version
       - key: PYTHON_VERSION
