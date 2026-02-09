@@ -20,32 +20,26 @@ services:
       - app-network
 
   backend:
-    build: ./backend
+    build: ./backend/RAG_chatbot
     ports:
       - "8000:8000"
     environment:
-      - DBHOST=192.168.1.16
-      - DBPORT=3306
-      - DBNAME=rag_chatbot
-      - DBUSER=root
-      - DBPASSWORD=vraj10@pa
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=rag_chatbot
+      - DB_USER=root
+      - DB_PASSWORD=vraj10@pa
       - SECRET_KEY=your-super-secret-key-change-in-production
       - FRONTEND_URL=http://localhost:3000
-      - GEMINI_API_KEY=${AIzaSyCxkCKayyfjVWzWdq8dAxRg6mp2xU6pbIQ}
+      - OLLAMA_BASE_URL=http://localhost:11434
+      - OLLAMA_MODEL_NAME=phi4:14b
       - DEBUG=False
       - LOG_LEVEL=INFO
-      - DATABASE_URL: "mysql+pymysql://root:vraj10%40PA@192.168.1.16:3306/rag_chatbot"
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     volumes:
       - uploads_data:/app/uploads
       - vector_data:/app/vector_stores
-    healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     networks:
       - app-network
 
@@ -54,17 +48,11 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     environment:
       - REACT_APP_API_URL=http://localhost:8000/api/v1
       - REACT_APP_APP_NAME=AI RAG Chatbot
       - REACT_APP_VERSION=2.0.0
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     networks:
       - app-network
 

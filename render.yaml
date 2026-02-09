@@ -1,0 +1,79 @@
+services:
+  # Backend API Service
+  - type: web
+    name: rag-chatbot-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "cd backend/RAG_chatbot && pip install -r requirements.txt"
+    startCommand: "cd backend/RAG_chatbot && uvicorn main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DB_HOST
+        value: localhost
+      - key: DB_PORT
+        value: 3306
+      - key: DB_NAME
+        value: rag_chatbot
+      - key: DB_USER
+        value: root
+      - key: DB_PASSWORD
+        generateValue: true
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OLLAMA_BASE_URL
+        value: http://localhost:11434
+      - key: OLLAMA_MODEL_NAME
+        value: llama3.2:latest
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: rag-chatbot-frontend
+          property: host
+      - key: DEBUG
+        value: false
+      - key: LOG_LEVEL
+        value: INFO
+      - key: UPLOAD_PATH
+        value: ./uploads
+      - key: VECTOR_STORE_PATH
+        value: ./vector_store
+      - key: MAX_FILE_SIZE_MB
+        value: 25
+
+  # Frontend Static Site
+  - type: web
+    name: rag-chatbot-frontend
+    env: static
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: frontend/build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: rag-chatbot-backend
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: REACT_APP_APP_NAME
+        value: AI RAG Chatbot
+      - key: REACT_APP_VERSION
+        value: 2.0.0
+
+databases:
+  # PostgreSQL Database (Free tier)
+  - name: rag-chatbot-db
+    databaseName: rag_chatbot
+    user: rag_user
+    plan: free
+    region: oregon
