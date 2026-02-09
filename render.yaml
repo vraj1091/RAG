@@ -39,22 +39,3 @@ services:
         value: ./uploads
       - key: VECTOR_STORE_PATH
         value: ./vector_store
-
-  # Frontend Static Site
-  - type: static
-    name: rag-chatbot-frontend
-    branch: main
-    rootDir: frontend
-    buildCommand: "npm install && npm run build"
-    staticPublishPath: ./build
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: REACT_APP_API_URL
-        sync: false
-      - key: REACT_APP_APP_NAME
-        value: AI RAG Chatbot
-      - key: REACT_APP_VERSION
-        value: "2.0.0"
