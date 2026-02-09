@@ -12,11 +12,11 @@ services:
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: "3.11.0"
       - key: DB_HOST
         value: localhost
       - key: DB_PORT
-        value: 3306
+        value: "3306"
       - key: DB_NAME
         value: rag_chatbot
       - key: DB_USER
@@ -32,16 +32,17 @@ services:
       - key: FRONTEND_URL
         sync: false
       - key: DEBUG
-        value: false
+        value: "false"
       - key: LOG_LEVEL
         value: INFO
+      - key: UPLOAD_PATH
+        value: ./uploads
+      - key: VECTOR_STORE_PATH
+        value: ./vector_store
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: rag-chatbot-frontend
-    env: static
-    region: oregon
-    plan: free
     branch: main
     rootDir: frontend
     buildCommand: "npm install && npm run build"
@@ -56,4 +57,4 @@ services:
       - key: REACT_APP_APP_NAME
         value: AI RAG Chatbot
       - key: REACT_APP_VERSION
-        value: 2.0.0
+        value: "2.0.0"
