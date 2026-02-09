@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  /* Ensure smooth font scaling on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed w-full sm:w-auto;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 w-full sm:w-auto;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-md transition-shadow duration-200 cursor-pointer;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-gray-300 border-t-primary-600;
+  }
+
+  .message-user {
+    @apply max-w-xs sm:max-w-md px-4 py-3 rounded-2xl bg-primary-600 text-white ml-auto;
+  }
+
+  .message-assistant {
+    @apply max-w-xs sm:max-w-md px-4 py-3 rounded-2xl bg-gray-100 text-gray-900;
+  }
+
+  .file-upload-area {
+    @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors duration-200;
+  }
+
+  .file-upload-area-active {
+    @apply file-upload-area border-primary-500 bg-primary-50;
+  }
+}
+
+/* Custom scrollbar with responsive width for mobile */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loading-dots div {
+  width: 8px;
+  height: 8px;
+  background-color: #6b7280;
+  border-radius: 50%;
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.loading-dots div:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots div:nth-child(2) { animation-delay: -0.16s; }
+.loading-dots div:nth-child(3) { animation-delay: 0s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.fade-in { animation: fadeIn 0.5s ease-in-out; }
+.slide-up { animation: slideUp 0.3s ease-out; }
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Input & textarea improvements for mobile */
+input, textarea {
+  background-color: white !important;
+  color: black !important;
+  caret-color: black !important;
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 16px;
+  /* Ensure full width on small devices */
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+}
+
+/* Responsive container helper classes for max width and padding */
+.responsive-container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 md:px-8;
+}
+
+/* Scrollable chat container - responsive */
+.chat-scroll-container {
+  @apply flex flex-col max-h-[80vh] overflow-auto;
+}
+
+/* Larger touch targets for buttons and clickable elements */
+button, label {
+  @apply py-3 px-4 rounded-lg;
+  touch-action: manipulation;
+}
+
+/* Hide scrollbars for mobile for better UX, optional */
+@media (max-width: 640px) {
+  .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

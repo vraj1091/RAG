@@ -1,0 +1,6 @@
+# Frontend Environment Variables
+REACT_APP_BACKEND_URL=http://localhost:8000
+REACT_APP_API_URL=http://backend-api:8000
+REACT_APP_APP_NAME=Full Stack App
+CHOKIDAR_USEPOLLING=true
+GENERATE_SOURCEMAP=false

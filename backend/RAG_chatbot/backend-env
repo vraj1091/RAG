@@ -1,0 +1,7 @@
+# Backend Environment Variables
+PORT=8000
+HOST=0.0.0.0
+DEBUG=true
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://frontend-app:3000,https://your-frontend.onrender.com
+DATABASE_URL=sqlite:///./test.db
+SECRET_KEY=your-secret-key-change-in-production
